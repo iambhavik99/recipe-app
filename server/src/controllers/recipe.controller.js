@@ -1,0 +1,72 @@
+const Recipe = require("../models/recipe.model");
+
+// get list of all recipes
+const getRecipes = async (req, res) => {
+    try {
+        const response = await Recipe
+            .find({})
+            .select({ "_id": 1, "name": 1, "image": 1 })
+
+        res.status(200)
+            .send({ items: response });
+
+    }
+    catch (ex) {
+        res.status(400)
+            .send({
+                err: ex.message,
+                code: ex.code
+            });
+    }
+}
+
+// get recipe by id
+const getRecipesById = async (req, res) => {
+    try {
+        const response = await Recipe.findOne({ _id: req.params.id });
+
+        res.status(200)
+            .send(response);
+    }
+    catch (ex) {
+        res.status(400)
+            .send({
+                err: ex.message,
+                code: ex.code
+            });
+    }
+}
+
+// add new recipe
+const addRecipe = async (req, res) => {
+    try {
+
+        const payload = req.body;
+
+        let recipe = new Recipe();
+        recipe.name = payload.name;
+        recipe.ingredients = payload.ingredients;
+        recipe.steps = payload.steps;
+        recipe.image = payload.image;
+
+        const response = await recipe.save();
+
+        res.status(200)
+            .send(response);
+    }
+    catch (ex) {
+        res.status(400)
+            .send({
+                err: ex.message,
+                code: ex.code
+            });
+    }
+}
+
+
+
+module.exports = {
+    getRecipes,
+    getRecipesById,
+    addRecipe
+}

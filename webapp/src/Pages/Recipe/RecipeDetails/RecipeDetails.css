@@ -1,0 +1,19 @@
+.recipe-detail-page {
+  padding: 1rem;
+  position: relative;
+}
+
+.recipe-image {
+  height: 250px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+}
+
+.recipe-name {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.44px;
+}

@@ -1,0 +1,13 @@
+.header-toolbar {
+  color: var(--secondary-color);
+  background: var(--primary-color);
+  min-height: 48px !important;
+}
+
+.header-title {
+  cursor: pointer;
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: 0.67px;
+  text-decoration: none;
+}
