@@ -1,7 +1,7 @@
 const Recipe = require("../models/recipe.model");
 
 // get list of all recipes
-const getRecipes = async (req, res) => {
+const getRecipes = async (req, res, next) => {
     try {
         const response = await Recipe
             .find({})
@@ -64,9 +64,29 @@ const addRecipe = async (req, res) => {
 }
 
 
+const addReactions = async (req, res) => {
+    try {
+        const recipe = await Recipe.findOne({ _id: req.params.id });
+        recipe.reactions = recipe.reactions + 1;
+
+        const response = await recipe.save();
+
+        res.status(200)
+            .send(response);
+    }
+    catch (ex) {
+        res.status(400)
+            .send({
+                err: ex.message,
+                code: ex.code
+            });
+    }
+}
+
 
 module.exports = {
     getRecipes,
     getRecipesById,
-    addRecipe
+    addRecipe,
+    addReactions
 }
