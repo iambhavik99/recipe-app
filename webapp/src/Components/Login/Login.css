@@ -1,0 +1,30 @@
+.login-page-wrapper {
+  margin: 0;
+  padding: 6px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.login-input {
+  width: 350px;
+}
+
+.login-input-div {
+  padding: 12px 0;
+}
+
+.login-title {
+  font-size: 24px;
+  letter-spacing: 0.44px;
+  font-weight: 500;
+  color: var(--primary-color);
+  padding-bottom: 12px;
+}
+
+.error-text {
+  font-size: 14px;
+  color: red;
+  padding-top: 12px;
+}
