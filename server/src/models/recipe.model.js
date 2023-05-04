@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const fs = require('fs');
-var mime = require('mime');
 
 const RecipeSchema = mongoose.Schema({
     name: {
@@ -19,6 +18,10 @@ const RecipeSchema = mongoose.Schema({
     image: {
         type: String,
         required: true
+    },
+    reactions: {
+        type: Number,
+        default: 0
     }
 }, {
     timestamps: true
@@ -40,22 +43,27 @@ RecipeSchema.pre('save', async function (next) {
 
     var recipe = this;
 
-    const fileExtension = recipe.image.split(";")[0]?.split("/")[1];
+    if (recipe.image?.startsWith("uploads/")) {
+        next();
+    }
+    else {
+        const fileExtension = recipe.image.split(";")[0]?.split("/")[1];
 
-    const imageFilePath = `uploads/${recipe.id}.${fileExtension}`
+        const imageFilePath = `uploads/${recipe.id}.${fileExtension}`
 
-    // strip off the data: url prefix to get just the base64-encoded bytes
-    const imageBase64Striped = recipe.image.replace(/^data:image\/\w+;base64,/, "");
+        // strip off the data: url prefix to get just the base64-encoded bytes
+        const imageBase64Striped = recipe.image.replace(/^data:image\/\w+;base64,/, "");
 
-    // convert base64 to buffer
-    const imageBuffer = new Buffer.from(imageBase64Striped, 'base64')
+        // convert base64 to buffer
+        const imageBuffer = new Buffer.from(imageBase64Striped, 'base64')
 
-    // save image
-    fs.writeFileSync(imageFilePath, imageBuffer);
+        // save image
+        fs.writeFileSync(imageFilePath, imageBuffer);
 
-    recipe.image = imageFilePath;
+        recipe.image = imageFilePath;
 
-    next();
+        next();
+    }
 
 });
 

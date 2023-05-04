@@ -1,13 +1,14 @@
 import './RecipeDetails.css';
 
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, Grid } from "@mui/material";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Divider, Grid, IconButton } from "@mui/material";
+import { useLocation } from 'react-router-dom';
 
-import { RecipeIngredients } from '../../../Components/RecipeIngredients/RecipeIngredients';
-import { RecipeSteps } from '../../../Components/RecipeSteps/RecipeSteps';
+import { RecipeIngredients } from '../../../UI/RecipeIngredients/RecipeIngredients.js';
+import { RecipeSteps } from '../../../UI/RecipeSteps/RecipeSteps.js';
 import axios from 'axios';
-import { Header } from '../../../Components/Header/Header';
+import RecommendIcon from '@mui/icons-material/Recommend';
+import { AppIconButton } from '../../../UI/Button/Button';
 
 
 export const RecipeDetails = () => {
@@ -15,10 +16,9 @@ export const RecipeDetails = () => {
     const { state } = useLocation();
 
     const [recipe, setRecipe] = useState({});
-    const navigation = useNavigate({});
 
     useEffect(() => {
-        getRecipeById(state.id)
+        getRecipeById(state.id);
     }, [state.id]);
 
 
@@ -33,10 +33,19 @@ export const RecipeDetails = () => {
         setRecipe(response.data);
     }
 
+    const addReactions = async () => {
+        const response = await axios
+            .get(
+                `http://localhost:3001/api/recipe/reactions/${state.id}`,
+                {
+                    headers: { Accept: 'application/json' }
+                });
+        setRecipe(response.data);
+    }
+
 
     return (
         <React.Fragment>
-            <Header />
             <div className='recipe-detail-page'>
                 <Grid container
                     spacing={2}>
@@ -49,7 +58,16 @@ export const RecipeDetails = () => {
                         />
                     </Grid>
                     <Grid item xs={9}>
-                        <div className='recipe-name'>{recipe.name}</div>
+                        <div className='recipe-header'>
+                            <div className='recipe-name'>{recipe.name}</div>
+                            <div>
+                                <AppIconButton
+                                    className="secondary-button small-button"
+                                    icon={<RecommendIcon />}
+                                    onClick={() => addReactions()} />
+                                {recipe.reactions}
+                            </div>
+                        </div>
                         <Divider />
                         <RecipeIngredients ingredients={recipe.ingredients} />
                     </Grid>

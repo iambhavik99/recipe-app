@@ -1,9 +1,28 @@
 :root {
   --font-family: "Bitter", serif;
-  --primary-color: orange;
+  --primary-color: rgb(255 165 0);
   --secondary-color: white;
 }
 
 body {
   font-family: var(--font-family);
+}
+
+.primary-button {
+  background-color: var(--primary-color) !important;
+  color: var(--secondary-color) !important;
+  width: 120px;
+}
+
+.secondary-button {
+  color: var(--primary-color) !important;
+  background-color: var(--secondary-color) !important;
+  width: 120px;
+  border: 1px solid var(--primary-color) !important;
+}
+
+.small-button {
+  border: 0 !important;
+  width: 30px !important;
+  min-width: 30px !important;
 }

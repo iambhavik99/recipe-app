@@ -17,3 +17,9 @@
   font-weight: 500;
   letter-spacing: 0.44px;
 }
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}

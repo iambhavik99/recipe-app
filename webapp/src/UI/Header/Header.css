@@ -2,6 +2,9 @@
   color: var(--secondary-color);
   background: var(--primary-color);
   min-height: 48px !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header-title {

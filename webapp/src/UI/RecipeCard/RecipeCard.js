@@ -1,16 +1,13 @@
 import React from "react";
 import { Card, Grid } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 
 import './RecipeCard.css';
 
 
 export const RecipeCard = (props) => {
 
-    const navigate = useNavigate();
-
     const handleClick = (id) => {
-        navigate(`/recipe/item`, { state: { id: id } });
+        props.onclick(id)
     }
 
 
