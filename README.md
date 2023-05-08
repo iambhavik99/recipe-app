@@ -1,9 +1,15 @@
 # recipe-app
 
+### Admin user functionality
 
-## Home page
-![Home page](webapp/public/assets/img/home_page.png)
+- Add new recipe
+- Update existing recipes
+- delete recipes
+
+### Non admin user / Anonyms user functionality
+
+- View all recipes and their steps and ingredients
+- Give reactions(likes) to recipes
 
 
-## Recipe page
-![Recipe page](webapp/public/assets/img/recipe_page.png)
+<video src="snapshots/Recipe%20app.mp4" controls title="Title"></video>
