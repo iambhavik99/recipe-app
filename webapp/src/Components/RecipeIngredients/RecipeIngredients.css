@@ -3,7 +3,7 @@
   font-weight: 500;
   letter-spacing: 0.67px;
   padding: 12px 0;
-  color: var(--primary-color);
+  color: var(--secondary-color);
 }
 
 .recipe-ingredients {
@@ -13,5 +13,5 @@
 }
 
 .recipe-ingredients li::marker{
-  color: var(--primary-color);
+  color: var(--secondary-color);
 }

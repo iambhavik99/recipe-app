@@ -1,42 +1,56 @@
 import './Header.css';
 
-import React, { useEffect, useState } from 'react';
+import { Fragment } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import { AppButton } from '../Button/Button';
 
+import logo from "../../assets/logo.svg";
+
 export const Header = (props) => {
+    const { isLoggedInUser } = props.loggedInUserInfo;
 
-    const [isLoggedInUser, setStatus] = useState(true);
+    const logout = () => {
+        localStorage.clear();
+        props.navigate('/login');
+    }
 
-    useEffect(() => {
-        setStatus(!!localStorage.getItem('access_token'));
-    }, [])
-
-    const onClickHandler = () => {
-        props.navigate('/login')
+    const showLoginButton = () => {
+        if (!isLoggedInUser) {
+            return (
+                <AppButton
+                    className='link-button'
+                    variant='outlined'
+                    onClick={() => props.navigate('/login')}
+                    text="Log in"
+                />
+            );
+        }
+        else {
+            return (
+                <AppButton
+                    className='link-button'
+                    variant='outlined'
+                    onClick={logout}
+                    text="Log out"
+                />
+            )
+        }
     }
 
     return (
-        <React.Fragment>
-            <AppBar color="transparent" position={'relative'}>
+        <Fragment>
+            <AppBar color="transparent" position="relative" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
                 <Toolbar className='header-toolbar'>
-                    <div className='header-title' onClick={() => props.navigate('/')}>
-                        Recipes
+                    <div onClick={() => props.navigate('/')}>
+                        <div className='header-title' >
+                            <img src={logo} alt='logo' className='header-logo' />
+                            <div style={{ marginLeft: 8 }}>Recipe</div>
+                        </div>
                     </div>
-                    <div>
-                        {
-                            isLoggedInUser ? '' : <AppButton
-                                className='secondary-button'
-                                variant='outlined'
-                                onClick={onClickHandler}
-                                text="Log in"
-                            />
-
-                        }
-                    </div>
+                    <div>{showLoginButton()}</div>
                 </Toolbar>
             </AppBar>
-        </React.Fragment >
+        </Fragment >
     );
 }

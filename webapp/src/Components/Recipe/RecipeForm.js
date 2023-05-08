@@ -1,73 +1,98 @@
-import { Grid } from "@mui/material";
 import axios from "axios";
-import { useReducer, useRef, useState } from "react";
+import { useEffect, useReducer, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AppButton, AppIconButton } from "../../../UI/Button/Button";
+import { AppButton, AppIconButton } from "../../UI/Button/Button";
+
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import RecipeCss from './Recipe.module.css'
+import { AppInputField, AppInputFieldMultiline } from "../../UI/Input/Input";
+import { Grid } from "@mui/material";
+import { getAccessToken } from "../../auth/auth";
 
-import RecipeCss from '../Recipe.module.css'
-import { AppInputField, AppInputFieldMultiline } from "../../../UI/Input/Input";
 
 const initialState = {
     name: '',
     ingredients: ['', '', '', ''],
     steps: ['', '']
 }
+
 const recipeReducerFunction = (state, action) => {
-    if (action.type === 'UPDATE_STEPS') {
-        let { steps } = state;
-        steps[action.index] = action.step;
-        state = { ...state, steps }
-        return state;
-    }
-    else if (action.type === 'UPDATE_INGREDIENT') {
-        let { ingredients } = state;
-        ingredients[action.index] = action.ingredient;
-        state = { ...state, ingredients }
-        return state;
-    }
-    else if (action.type === 'ADD_STEP') {
-        let { steps } = state;
-        steps.push('');
-        state = { ...state, steps }
-        return state;
-    }
-    else if (action.type === 'ADD_INGREDIENT') {
-        let { ingredients } = state;
-        ingredients.push('');
-        state = { ...state, ingredients }
-        return state;
-    }
-    else if (action.type === 'DELETE_STEP') {
-        let { steps } = state;
-        steps.splice(action.index, 1);
-        state = { ...state, steps }
-        return state;
-    }
-    else if (action.type === 'DELETE_INGREDIENT') {
-        let { ingredients } = state;
-        ingredients.splice(action.index, 1);
-        state = { ...state, ingredients }
-        return state;
-    }
-    else {
-        state = action.state
-        return state
+    debugger
+    switch (action.type) {
+        case 'steps':
+
+            var { steps } = state;
+
+            if (action.action === 'add') {
+                steps.push('');
+            }
+            else if (action.action === 'update') {
+                steps[action.index] = action.step;
+            }
+            else if (action.action === 'delete') {
+                steps.splice(action.index, 1);
+            }
+            state = { ...state, steps }
+            return state;
+
+        case 'ingredient':
+            var { ingredients } = state;
+
+            if (action.action === 'add') {
+                ingredients.push('');
+            }
+            else if (action.action === 'update') {
+                ingredients[action.index] = action.ingredient;
+            }
+            else if (action.action === 'delete') {
+                ingredients.splice(action.index, 1);
+            }
+
+            state = { ...state, ingredients }
+            return state;
+
+        default:
+            state = action.state
+            return state;
     }
 
 }
 
 
+const RecipeForm = (props) => {
 
-
-const AddEditRecipe = () => {
     const [recipe, dispatchRecipe] = useReducer(recipeReducerFunction, initialState);
     const [error, setError] = useState('');
     const [image, setImage] = useState({ file: '', dataUrl: '' });
-    const inputFile = useRef(null)
+    const inputFile = useRef(null);
+
+    const id = props?.id;
 
     const navigation = useNavigate();
+
+    useEffect(() => {
+
+        async function fetchData() {
+            const response = await axios
+                .get(
+                    `http://localhost:3001/api/recipe/${id}`,
+                    {
+                        headers: { Accept: 'application/json' }
+                    });
+
+            const responseData = response.data;
+
+            dispatchRecipe({ state: { ...responseData } });
+            setImage({ dataUrl: responseData.image })
+        }
+
+
+        if (id) {
+            fetchData();
+        }
+
+    }, [id])
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
@@ -77,30 +102,30 @@ const AddEditRecipe = () => {
             image: image.dataUrl
         }
 
-        await axios
-            .post(
-                `http://localhost:3001/api/recipe`,
-                payload,
-                {
-                    headers: {
-                        Accept: 'application/json',
-                        Authorization: `Bearer ${localStorage.getItem('access_token')}`
-                    }
-                })
+        const config = {
+            headers: {
+                Accept: 'application/json',
+                Authorization: `Bearer ${getAccessToken()}`
+            }
+        }
+
+        const promise = id ? axios.put(`http://localhost:3001/api/recipe/${id}`, payload, config) : axios.post(`http://localhost:3001/api/recipe`, payload, config)
+
+        promise
             .then(() => {
                 navigation('/');
             })
             .catch(err => {
+
                 setError(err.response.data.error);
-                setTimeout(() => { setError("") }, 2000)
                 if (err.response.status === 401) {
                     localStorage.clear();
-                    setTimeout(() => {
-                        navigation('/')
-                    }, 2000);
+                    navigation('/')
                 }
+
+                setTimeout(() => { setError("") }, 2000);
             })
-    };
+    }
 
     const blobToBase64 = async (event) => {
         const file = event?.target?.files[0];
@@ -119,24 +144,24 @@ const AddEditRecipe = () => {
         }
     }
 
-    const addIcon = (type, index) => {
+    const addIcon = (type, action, index) => {
         return index === 0 && (
             <div style={{ paddingLeft: 6, display: 'inline-block' }}>
                 <AppIconButton
-                    className="secondary-button small-button"
+                    className="svg-icon-button"
                     icon={<AddIcon />}
-                    onClick={() => dispatchRecipe({ type })} />
+                    onClick={() => dispatchRecipe({ type, action })} />
             </div>
         );
     }
 
-    const removeIcon = (type, index) => {
+    const removeIcon = (type, action, index) => {
         return index !== 0 && (
             <div style={{ paddingLeft: 6, display: 'inline-block' }}>
                 <AppIconButton
-                    className="secondary-button small-button"
+                    className="svg-icon-button"
                     icon={<RemoveIcon />}
-                    onClick={() => dispatchRecipe({ type, index })} />
+                    onClick={() => dispatchRecipe({ type, action, index })} />
             </div>
         );
     }
@@ -144,15 +169,25 @@ const AddEditRecipe = () => {
     const imgElement = (image) => {
         if (!image.dataUrl) {
             return (
-                <AppButton
-                    style={{ width: 'auto' }}
-                    className="secondary-button"
-                    text="Upload image"
-                    onClick={() => inputFile?.current?.click()} />
+                <div
+                    className={RecipeCss["recipe-image-div"]}>
+                    <input
+                        type='file'
+                        id='file'
+                        ref={inputFile}
+                        style={{ display: 'none' }}
+                        onChange={(e) => blobToBase64(e)} />
+                    <AppButton
+                        style={{ width: 'auto' }}
+                        className="secondary-button"
+                        text="Upload image"
+                        onClick={() => inputFile?.current?.click()} />
+                </div>
+
             );
         }
         return (
-            <img src={image.dataUrl} alt="recipe" />
+            <img src={image.dataUrl} alt="recipe" className={RecipeCss["recipe-image"]} />
         );
     }
 
@@ -160,20 +195,11 @@ const AddEditRecipe = () => {
         <div style={{ padding: 12 }}>
             <form onSubmit={onSubmitHandler}>
                 <Grid container spacing={2}>
-                    <Grid item xs={4}>
-                        <div
-                            className={RecipeCss["recipe-image-div"]}>
-                            <input
-                                type='file'
-                                id='file'
-                                ref={inputFile}
-                                style={{ display: 'none' }}
-                                onChange={(e) => blobToBase64(e)} />
-                            {imgElement(image)}
-                        </div>
+                    <Grid item xs={3}>
+                        {imgElement(image)}
                     </Grid>
 
-                    <Grid item xs={8}>
+                    <Grid item xs={9}>
                         <AppInputField
                             id="recipe-name"
                             type="text"
@@ -191,14 +217,14 @@ const AddEditRecipe = () => {
                                             <AppInputField
                                                 type="text"
                                                 value={ingredient}
-                                                onChange={(e) => dispatchRecipe({ type: 'UPDATE_INGREDIENT', index: index, ingredient: e.target.value })}
+                                                onChange={(e) => dispatchRecipe({ type: 'ingredient', action: 'update', index: index, ingredient: e.target.value })}
                                                 label="Ingredient"
                                                 size="small"
                                                 className="login-input"
                                             />
                                             <div>
-                                                {addIcon('ADD_INGREDIENT', index)}
-                                                {removeIcon('DELETE_INGREDIENT', index)}
+                                                {addIcon('ingredient', 'add', index)}
+                                                {removeIcon('ingredient', 'delete', index)}
                                             </div>
                                         </Grid>)
                                 })
@@ -213,15 +239,15 @@ const AddEditRecipe = () => {
                                     <AppInputFieldMultiline
                                         type="text"
                                         value={step}
-                                        onChange={(e) => dispatchRecipe({ type: 'UPDATE_STEPS', index: index, step: e.target.value })}
+                                        onChange={(e) => dispatchRecipe({ type: 'steps', action: 'update', index: index, step: e.target.value })}
                                         label="Step"
                                         className="login-input"
                                         multiline
                                         style={{ width: '100%' }}
                                         maxRows={4}
                                     />
-                                    {addIcon('ADD_STEP', index)}
-                                    {removeIcon('DELETE_STEP', index)}
+                                    {addIcon('steps', 'add', index)}
+                                    {removeIcon('steps', 'delete', index)}
                                 </div>
                             })
                         }
@@ -237,6 +263,15 @@ const AddEditRecipe = () => {
                         variant="text"
                         text="Save"
                     />
+
+                    <AppButton
+                        style={{ marginLeft: 6 }}
+                        type="button"
+                        className="secondary-button"
+                        variant="text"
+                        text="Cancel"
+                        onClick={() => navigation('/')}
+                    />
                 </div>
             </form>
 
@@ -244,7 +279,9 @@ const AddEditRecipe = () => {
                 {error && <p>{error}</p>}
             </div>
         </div >
+
     );
+
 }
 
-export default AddEditRecipe;
+export default RecipeForm;
