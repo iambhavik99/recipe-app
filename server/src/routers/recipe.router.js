@@ -8,7 +8,9 @@ router
     .get('/', recipe.getRecipes)
     .get('/:id', recipe.getRecipesById)
     .post('/', auth, recipe.addRecipe)
-    .get('/reactions/:id', recipe.addReactions);
+    .put('/:id', auth, recipe.updateRecipe)
+    .get('/reactions/:id', recipe.addReactions)
+    .delete('/:id', auth, recipe.deleteRecipe);
 
 
 module.exports = router;

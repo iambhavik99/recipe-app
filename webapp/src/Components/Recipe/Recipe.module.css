@@ -16,6 +16,33 @@
 
 .input-icon-wrapper {
   display: flex;
-  justify-content: start;
+  justify-content: flex-start;
   align-items: center;
+}
+
+.recipe-detail-page {
+  padding: 1rem;
+  position: relative;
+}
+
+.recipe-image {
+  height: 250px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 6px;
+}
+
+.recipe-name {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 0.44px;
+  color: var(--primary-color);
+}
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
 }

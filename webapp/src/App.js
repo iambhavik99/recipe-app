@@ -1,30 +1,55 @@
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import "./App.css";
-import { Login } from "./Components/Login/Login.js";
-import { RecipesList } from "./Components/Recipe/RecipeList/RecipeList.js";
-import { RecipeDetails } from "./Components/Recipe/RecipeDetails/RecipeDetails.js";
-import { Master } from "./Components/Master/Master.js";
-import { Signup } from "./Components/Signup/Signup";
-import AddEditRecipe from "./Components/Recipe/AddEditRecipe/AddEditRecipe";
+import { getLoggedInUserInfo } from "./auth/auth";
+import { Login } from "./Pages/Login/Login";
+import { Signup } from "./Pages/Signup/Signup";
+import RecipePage from "./Pages/Recipes/RecipePage";
+import { Master } from "./Pages/Master";
+import AddRecipe from "./Pages/Recipes/AddRecipe";
+import EditRecipe from "./Pages/Recipes/EditRecipe";
+import RecipeInfo from "./Pages/Recipes/RecipeInfo";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <Master />,
+    loader: getLoggedInUserInfo,
+    children: [
+      {
+        index: true,
+        element: <RecipePage />,
+        loader: getLoggedInUserInfo,
+      },
+      {
+        path: 'recipe/:id',
+        element: <RecipeInfo />
+      },
+      {
+        path: 'recipe/new',
+        element: <AddRecipe />
+      },
+      {
+        path: 'recipe/edit/:id',
+        element: <EditRecipe />
+      }
+    ]
+  },
+  {
+    path: '/login',
+    element: <Login />
+  },
+  {
+    path: '/signup',
+    element: <Signup />
+  }
+])
+
+
+
 
 function App() {
   return (
-    <div className="App">
-
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<Master />}>
-            <Route path="/" element={<RecipesList />} />
-            <Route path="/recipe/item" element={<RecipeDetails />} />
-            <Route path="/recipe/item/add" element={<AddEditRecipe />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
-
-      <Outlet />
-    </div>
+    <RouterProvider router={router}>    </RouterProvider>
   );
 }
 

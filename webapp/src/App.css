@@ -1,7 +1,16 @@
 :root {
   --font-family: "Bitter", serif;
-  --primary-color: rgb(255 165 0);
-  --secondary-color: white;
+  --white-color: white;
+  --primary-color-900: #be2c00;
+  --primary-color-800: #d63b00;
+  --primary-color-700: #e34300;
+  --primary-color-600: #f14a00;
+  --primary-color-500: #fc5000;
+  --primary-color-400: #fd6a32;
+  --primary-color-300: #fe8559;
+  --primary-color-200: #ffa889;
+  --primary-color-100: #ffcab7;
+  --primary-color-50: #fce8e5;
 }
 
 body {
@@ -9,20 +18,41 @@ body {
 }
 
 .primary-button {
-  background-color: var(--primary-color) !important;
-  color: var(--secondary-color) !important;
   width: 120px;
+  color: var(--white-color) !important;
+  background-color: var(--primary-color-600) !important;
 }
 
 .secondary-button {
-  color: var(--primary-color) !important;
-  background-color: var(--secondary-color) !important;
   width: 120px;
-  border: 1px solid var(--primary-color) !important;
+  color: var(--white-color) !important;
+  background-color: var(--primary-color-300) !important;
 }
 
-.small-button {
+.link-button {
+  width: 120px;
+  color: var(--primary-color-300) !important;
+  border: none !important;
+}
+
+.action-button {
+  color: var(--primary-color-300) !important;
+  border: none !important;
+}
+
+.primary-button:hover,
+.secondary-button:hover {
+  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
+    rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+}
+
+.link-button:hover {
+  color: var(--primary-color-600) !important;
+}
+
+.svg-icon-button {
   border: 0 !important;
   width: 30px !important;
   min-width: 30px !important;
+  color: var(--primary-color-600) !important ;
 }

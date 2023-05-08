@@ -63,6 +63,32 @@ const addRecipe = async (req, res) => {
     }
 }
 
+const updateRecipe = async (req, res) => {
+    try {
+
+        const payload = req.body;
+
+        const recipe = await Recipe.findOne({ _id: req.params.id });
+
+        recipe.name = payload.name;
+        recipe.ingredients = payload.ingredients;
+        recipe.steps = payload.steps;
+        recipe.image = payload.image;
+
+        const response = await recipe.save();
+
+        res.status(200)
+            .send(response);
+    }
+    catch (ex) {
+        res.status(400)
+            .send({
+                err: ex.message,
+                code: ex.code
+            });
+    }
+}
+
 
 const addReactions = async (req, res) => {
     try {
@@ -83,10 +109,26 @@ const addReactions = async (req, res) => {
     }
 }
 
+const deleteRecipe = async (req, res) => {
+    try {
+        await Recipe.deleteOne({ _id: req.params.id });
+        res.status(200);
+    }
+    catch (ex) {
+        res.status(400)
+            .send({
+                err: ex.message,
+                code: ex.code
+            });
+    }
+}
+
 
 module.exports = {
     getRecipes,
     getRecipesById,
     addRecipe,
-    addReactions
+    addReactions,
+    updateRecipe,
+    deleteRecipe
 }
