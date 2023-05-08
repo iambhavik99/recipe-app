@@ -67,6 +67,17 @@ RecipeSchema.pre('save', async function (next) {
 
 });
 
+
+RecipeSchema.post('deleteOne', function (next) {
+    var recipe = this;
+
+    fs.unlinkSync(`uploads/${recipe._conditions._id}.jpeg`);
+
+    next();
+
+});
+
+
 const Recipe = mongoose.model('recipe', RecipeSchema);
 
 module.exports = Recipe;
